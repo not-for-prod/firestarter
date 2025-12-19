@@ -1,0 +1,49 @@
+version: v2
+clean: true
+managed:
+  enabled: true
+  disable:
+    - module: buf.build/protocolbuffers/go
+    - module: buf.build/googleapis/googleapis
+    - module: buf.build/grpc/go
+    - module: buf.build/bufbuild/protovalidate
+    - module: buf.build/grpc-ecosystem/grpc-gateway
+    - module: buf.build/nfp341/proterror
+  override:
+    - file_option: go_package_prefix
+      value: payin/internal/generated/pb
+plugins:
+  - remote: buf.build/protocolbuffers/go
+    out: internal/generated/pb
+    opt:
+      - paths=source_relative
+  - remote: buf.build/grpc/go
+    out: internal/generated/pb
+    opt:
+      - paths=source_relative
+      - require_unimplemented_servers=false
+  # grpc-gateway
+  - remote: buf.build/grpc-ecosystem/gateway
+    opt:
+      - generate_unbound_methods=false
+      - logtostderr=true
+      - paths=source_relative
+    out: internal/generated/pb
+  #    swag
+  - remote: buf.build/grpc-ecosystem/openapiv2
+    out: internal/generated/pb
+    opt:
+      - generate_unbound_methods=false
+      - fqn_for_openapi_name=true
+  # proto-first clay server
+  - local: protoc-gen-goclay
+    out: internal/generated/pb
+    opt:
+      - paths=source_relative
+      - out=internal/generated/pb
+      - dst=internal/delivery/api
+  # proto errors
+  - local: protoc-gen-proterror
+    out: internal/generated/pb
+    opt:
+      - paths=source_relative
