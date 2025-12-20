@@ -5,11 +5,11 @@
 .PHONY: dependency
 dependency:
 	# mocks
-	go install https://github.com/matryer/moq@latest
+	go install github.com/matryer/moq@latest
 	# migrations
 	go install github.com/pressly/goose/v3/cmd/goose@latest
 	# reverse orm
-	go install github.com/not-for-prod/xo-templates@latest
+	go install github.com/not-for-prod/xo@latest
 	# proto plugins
 	go install github.com/not-for-prod/proterror/cmd/protoc-gen-proterror@latest
 	go install github.com/not-for-prod/clay/cmd/protoc-gen-goclay@latest
@@ -18,8 +18,8 @@ dependency:
 
 .PHONY: init
 init: dependency
-	./init.sh $(notdir $(CURDIR)) &&
-	go mod tidy &&
+	./init.sh $(notdir $(CURDIR)) && \
+	go mod tidy && \
 	pre-commit install --config .pre-commit-config.yaml
 
 # ==================================================================================== #
