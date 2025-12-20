@@ -29,10 +29,10 @@ init: dependency
 .PHONY: infra ## поднимает инфрастуктуру для проекта
 .SILENCE:
 infra:
-	docker-compose -f ./docker-compose.yaml up -d --build --force-recreate --wait
+	docker-compose -f ./build/docker-compose.yaml up -d --build --force-recreate --wait
 
 infra-stop:
-	docker-compose -f ./docker-compose.yaml down
+	docker-compose -f ./build/docker-compose.yaml down
 
 # ==================================================================================== #
 # MIGRATIONS
@@ -60,7 +60,7 @@ migrations: migrations-reset migrations-up
 # ==================================================================================== #
 
 XO_OUTPUT_PATH=./internal/generated/xo
-XO_TEMPLATE_PATH=./tools/xo_templates
+XO_TEMPLATE_PATH=./tools/xo-templates
 .PHONY: xo ## генерация dto базы данных
 xo:
 	rm -rf $(XO_OUTPUT_PATH)
