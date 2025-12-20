@@ -1,0 +1,100 @@
+configs:
+  tempo_config:
+    file: tempo.yaml
+  prometheus_config:
+    file: prometheus.yaml
+
+services:
+  kafka:
+    container_name: kafka
+    image: confluentinc/cp-kafka:latest
+    ports:
+      - "29092:29092"
+      - "29093:29093"
+    environment:
+      CLUSTER_ID: e458ed71-9cde-4339-a13e-201c81d89e07
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_HOST://0.0.0.0:29092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_DB: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+
+  tempo:
+    image: grafana/tempo:latest
+    container_name: tempo
+    restart: unless-stopped
+    configs:
+      - source: tempo_config # Ссылка на имя конфигурации, определенной выше
+        target: /etc/tempo/tempo.yaml
+    expose:
+      - 3200
+    ports:
+      - "4317:4317"    # OTLP gRPC
+    command: [ "-config.file=/etc/tempo/tempo.yaml" ]
+
+  grafana:
+    image: grafana/grafana:11.5.8
+    container_name: grafana
+    restart: unless-stopped
+    user: 1000:1000
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_ANALYTICS_REPORTING_ENABLED=false
+      - GF_INSTALL_PLUGINS=victoriametrics-metrics-datasource
+
+  victoria-metrics:
+    image: victoriametrics/victoria-metrics:latest
+    container_name: victoria-metrics
+    ports:
+      - "8428:8428"  # Default port for HTTP API
+    configs:
+      - source: prometheus_config
+        target: /etc/vm/prometheus.yml
+    command:
+      - "-storageDataPath=/storage"  # Specify the path to store data
+      - "-retentionPeriod=30d"      # Retain data for 30 days
+      - "-promscrape.config=/etc/vm/prometheus.yml"  # Specify the path to the config file
+    restart: unless-stopped
+
+#  backend:
+#     container_name: backend
+#     build:
+#       context: ./
+#       dockerfile: Dockerfile
+#     ports:
+#       - "8000:8000"
+#       - "9000:9000"
+#     depends_on:
+#       - postgres
+#       - tracing
+#     restart: always
+#     volumes:
+#       - ./config:/root/config
+##     command: ["sh", "-c", "ls -l /root"]
+#     command: ["./main"]

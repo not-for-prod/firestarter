@@ -1,0 +1,10 @@
+global:
+  scrape_interval: 60s  # Interval between each scrape
+  scrape_timeout: 30s   # Timeout for each scrape
+
+## example
+#scrape_configs:
+#  - job_name: 'backend'
+#    metrics_path: '/metrics'
+#    static_configs:
+#      - targets: ['backend:8000']  # target to scrape
