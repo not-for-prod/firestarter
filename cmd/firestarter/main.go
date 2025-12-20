@@ -17,7 +17,7 @@ func newFxLogger() *fxLogger {
 	return &fxLogger{}
 }
 
-func (l *fxLogger) Printf(msg string, args ...interface{}) {
+func (l *fxLogger) Printf(msg string, args ...any) {
 	logger.Instance().Info(msg, args)
 }
 

@@ -2,26 +2,16 @@
 
 ## Prerequisites
 
-go install
+init project
 
 ```shell
-# mocks
-go install https://github.com/matryer/moq@latest
-# migrations
-go install github.com/pressly/goose/v3/cmd/goose@latest
-# reverse orm
-go install github.com/not-for-prod/xo-templates@latest
-# proto plugins
-go install github.com/not-for-prod/proterror/cmd/protoc-gen-proterror@latest
-go install github.com/not-for-prod/clay/cmd/protoc-gen-goclay@latest
-# code generators
-go install github.com/not-for-prod/implgen@latest
+make init
 ```
 
-pre-commit 
+or 
 
 ```shell
-pre-commit install --config .pre-commit-config.yaml
+./init.sh <project_name>
 ```
 
 ### Goland File and Code Templates

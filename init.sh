@@ -32,12 +32,20 @@ escape_sed_replacement() {
   printf '%s' "$s"
 }
 
+sed_inplace() {
+  local file="$1"
+  shift
+  sed -i.bak "$@" "$file"
+  rm -f "${file}.bak"
+}
+
 MODULE_ESCAPED="$(escape_sed_replacement "$MODULE")"
 
 # go.mod (support both placeholder templates and the current "firestarter" module name)
 if [[ -f "go.mod" ]]; then
-  sed -i "" "s|{{MODULE_NAME}}|$MODULE_ESCAPED|g" go.mod
-  sed -i "" "s|firestarter|$MODULE_ESCAPED|g" go.mod
+  sed_inplace go.mod \
+    -e "s|{{MODULE_NAME}}|$MODULE_ESCAPED|g" \
+    -e "s|firestarter|$MODULE_ESCAPED|g"
 fi
 
 # Rename folders that still contain "firestarter" (avoid touching Go's vendor cache under pkg/)
@@ -57,6 +65,17 @@ done < <(
   find . -depth \
     \( -path './.git' -o -path './pkg' \) -prune -o \
     -type d -name '*firestarter*' -print0
+)
+
+# Rewrite Go import paths that still point at the template module.
+while IFS= read -r -d '' file; do
+  sed_inplace "$file" \
+    -e "s|\"firestarter/|\"$MODULE_ESCAPED/|g" \
+    -e "s|\"firestarter\"|\"$MODULE_ESCAPED\"|g"
+done < <(
+  find . \
+    \( -path './.git' -o -path './pkg' \) -prune -o \
+    -type f -name '*.go' -print0
 )
 
 echo "Initialized project:"

@@ -1,9 +1,9 @@
 package config
 
 import (
+	"context"
 	"errors"
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"strings"
@@ -36,6 +36,7 @@ type Worker struct {
 	BatchSize uint64        `validate:"required,min=1"`
 }
 
+//nolint:gochecknoglobals // package-level singleton cache guarded by sync.Once
 var (
 	once   sync.Once
 	config *Config
@@ -56,12 +57,12 @@ func Instance() *Config {
 
 				viperCfg, err := loadConfig(path)
 				if err != nil {
-					log.Fatalf("error loading config file: %s", err)
+					panic("error loading config file: " + err.Error())
 				}
 
 				cfg, err := parseConfig(viperCfg)
 				if err != nil {
-					log.Fatalf("error parsing config file: %s", err)
+					panic("error parsing config file: " + err.Error())
 				}
 
 				config = cfg
@@ -74,10 +75,11 @@ func Instance() *Config {
 
 // getGoModRoot returns the absolute path to the root directory containing go.mod.
 func getGoModRoot() (string, error) {
-	output, err := exec.Command("go", "list", "-m", "-f", "{{.Dir}}").Output()
+	output, err := exec.CommandContext(context.Background(), "go", "list", "-m", "-f", "{{.Dir}}").Output()
 	if err != nil {
 		return "", err
 	}
+
 	return strings.TrimSpace(string(output)), nil
 }
 
@@ -86,13 +88,16 @@ func loadConfig(path string) (*viper.Viper, error) {
 
 	configRAW, err := os.Open(path)
 	if err != nil {
-		return nil, fmt.Errorf("can't load config file %s: %s", path, err)
+		return nil, fmt.Errorf("can't load config file %s: %w", path, err)
 	}
 
 	v.SetConfigName("config")
 	v.SetConfigType("yaml")
-	if err := v.ReadConfig(configRAW); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+
+	if err = v.ReadConfig(configRAW); err != nil {
+		var configFileNotFoundError viper.ConfigFileNotFoundError
+
+		if errors.As(err, &configFileNotFoundError) {
 			return nil, errors.New("config file not found")
 		}
 
@@ -107,8 +112,7 @@ func parseConfig(v *viper.Viper) (*Config, error) {
 
 	err := v.Unmarshal(&c)
 	if err != nil {
-		log.Printf("unable to decode into struct, %v", err)
-		return nil, err
+		return nil, fmt.Errorf("error unmarshalling config: %w", err)
 	}
 
 	err = validator.New().Struct(&c)

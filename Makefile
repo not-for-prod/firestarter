@@ -16,6 +16,12 @@ dependency:
 	# code generators
 	go install github.com/not-for-prod/implgen@latest
 
+.PHONY: init
+init: dependency
+	./init.sh $(notdir $(CURDIR)) &&
+	go mod tidy &&
+	pre-commit install --config .pre-commit-config.yaml
+
 # ==================================================================================== #
 # INFRASTRUCTURE
 # ==================================================================================== #
