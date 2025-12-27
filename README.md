@@ -24,7 +24,7 @@ or
   package ${DIR_PATH.replace("/", ".").replace("api.", "")};
   ```
 
-- infra ifce
+- `domain infrastructure` - creates interface of infrastructure layer
 
   ```
   #set( $CapName = $NAME.substring(0,1).toUpperCase() + $NAME.substring(1) )
@@ -39,7 +39,7 @@ or
   }
   ```
 
-- app ifce
+- `domain service` - creates interface of application service layer
 
   ```
   #set( $CapName = $NAME.substring(0,1).toUpperCase() + $NAME.substring(1) )

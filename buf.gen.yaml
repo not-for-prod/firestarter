@@ -25,7 +25,7 @@ plugins:
   # grpc-gateway
   - remote: buf.build/grpc-ecosystem/gateway
     opt:
-      - generate_unbound_methods=false
+      - generate_unbound_methods=true
       - logtostderr=true
       - paths=source_relative
     out: internal/generated/pb
@@ -33,14 +33,13 @@ plugins:
   - remote: buf.build/grpc-ecosystem/openapiv2
     out: internal/generated/pb
     opt:
-      - generate_unbound_methods=false
+      - generate_unbound_methods=true
       - fqn_for_openapi_name=true
   # proto-first clay server
   - local: protoc-gen-goclay
     out: internal/generated/pb
     opt:
       - paths=source_relative
-      - out=internal/generated/pb
       - dst=internal/delivery/api
   # proto errors
   - local: protoc-gen-proterror

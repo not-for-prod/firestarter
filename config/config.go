@@ -20,14 +20,6 @@ type Config struct {
 		ServiceName    string `validate:"required"`
 		ServiceVersion string `validate:"required"`
 	}
-	CORS struct {
-		AllowedOrigins   []string
-		AllowedMethods   []string
-		AllowedHeaders   []string
-		ExposedHeaders   []string
-		AllowCredentials bool
-		MaxAge           int
-	}
 }
 
 type Worker struct {

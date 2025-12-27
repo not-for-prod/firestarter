@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 
-	"firestarter/internal/config"
+	"firestarter/config"
 
 	"github.com/not-for-prod/observer/logger"
 	"github.com/not-for-prod/observer/logger/zap"
@@ -52,8 +52,8 @@ func initTracer(lc fx.Lifecycle) {
 	)
 	lc.Append(
 		fx.Hook{
-			OnStart: func(ctx context.Context) error {
-				return tp.Start(ctx)
+			OnStart: func(context.Context) error {
+				return tp.Start(context.Background())
 			},
 			OnStop: func(ctx context.Context) error {
 				return tp.Stop(ctx)
