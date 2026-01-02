@@ -48,6 +48,12 @@ if [[ -f "go.mod" ]]; then
     -e "s|firestarter|$MODULE_ESCAPED|g"
 fi
 
+# buf.gen.yaml (replace template module path)
+if [[ -f "buf.gen.yaml" ]]; then
+  sed_inplace buf.gen.yaml \
+    -e "s|firestarter|$MODULE_ESCAPED|g"
+fi
+
 # Rename folders that still contain "firestarter" (avoid touching Go's vendor cache under pkg/)
 while IFS= read -r -d '' dir; do
   new_dir="${dir//firestarter/$SERVICE_NAME}"

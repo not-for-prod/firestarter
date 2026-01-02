@@ -11,7 +11,7 @@ managed:
     - module: buf.build/nfp341/proterror
   override:
     - file_option: go_package_prefix
-      value: payin/internal/generated/pb
+      value: firestarter/internal/generated/pb
 plugins:
   - remote: buf.build/protocolbuffers/go
     out: internal/generated/pb
