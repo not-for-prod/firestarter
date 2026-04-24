@@ -1,0 +1,139 @@
+package config
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"os"
+	"os/exec"
+	"strings"
+	"sync"
+	"time"
+
+	"firestarter/internal/pkg/connector/postgres"
+
+	"github.com/go-playground/validator/v10"
+	"github.com/spf13/viper"
+)
+
+type Config struct {
+	Namespace string `validate:"required"`
+	Subsystem string `validate:"required"`
+	Tempo     struct {
+		URL            string `validate:"required"`
+		ServiceName    string `validate:"required"`
+		ServiceVersion string `validate:"required"`
+	}
+	Postgres          postgres.Config `validate:"required"`
+	Service           ClayServer      `validate:"required"`
+	MonitoringService struct {
+		HTTPPort          int           `validate:"required"`
+		ReadHeaderTimeout time.Duration `validate:"required"`
+	}
+}
+
+type ClayServer struct {
+	GRPCPort int `validate:"required"`
+	HTTPPort int `validate:"required"`
+	CORS     struct {
+		AllowedOrigins   []string
+		AllowedMethods   []string
+		AllowedHeaders   []string
+		ExposedHeaders   []string
+		AllowCredentials bool
+		MaxAge           int
+	} `validate:"required"`
+}
+
+type Worker struct {
+	Disable   bool
+	Interval  time.Duration `validate:"required,min=1"`
+	BatchSize uint64        `validate:"required,min=1"`
+}
+
+//nolint:gochecknoglobals // package-level singleton cache guarded by sync.Once
+var (
+	once   sync.Once
+	config *Config
+)
+
+func Instance() *Config {
+	if config == nil {
+		once.Do(
+			func() {
+				var err error
+
+				path := "./config/config.yaml"
+
+				root, err := getGoModRoot()
+				if err == nil {
+					path = root + "/config/config.yaml"
+				}
+
+				viperCfg, err := loadConfig(path)
+				if err != nil {
+					panic("error loading config file: " + err.Error())
+				}
+
+				cfg, err := parseConfig(viperCfg)
+				if err != nil {
+					panic("error parsing config file: " + err.Error())
+				}
+
+				config = cfg
+			},
+		)
+	}
+
+	return config
+}
+
+// getGoModRoot returns the absolute path to the root directory containing go.mod.
+func getGoModRoot() (string, error) {
+	output, err := exec.CommandContext(context.Background(), "go", "list", "-m", "-f", "{{.Dir}}").Output()
+	if err != nil {
+		return "", err
+	}
+
+	return strings.TrimSpace(string(output)), nil
+}
+
+func loadConfig(path string) (*viper.Viper, error) {
+	v := viper.New()
+
+	configRAW, err := os.Open(path)
+	if err != nil {
+		return nil, fmt.Errorf("can't load config file %s: %w", path, err)
+	}
+
+	v.SetConfigName("config")
+	v.SetConfigType("yaml")
+
+	if err = v.ReadConfig(configRAW); err != nil {
+		var configFileNotFoundError viper.ConfigFileNotFoundError
+
+		if errors.As(err, &configFileNotFoundError) {
+			return nil, errors.New("config file not found")
+		}
+
+		return nil, err
+	}
+
+	return v, nil
+}
+
+func parseConfig(v *viper.Viper) (*Config, error) {
+	var c Config
+
+	err := v.Unmarshal(&c)
+	if err != nil {
+		return nil, fmt.Errorf("error unmarshalling config: %w", err)
+	}
+
+	err = validator.New().Struct(&c)
+	if err != nil {
+		return nil, fmt.Errorf("can't validate config: %s", err.Error())
+	}
+
+	return &c, nil
+}

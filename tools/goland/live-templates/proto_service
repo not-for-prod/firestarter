@@ -1,0 +1,14 @@
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/api/annotations.proto";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "$NAME$"
+    description: "$NAME$"
+    version: "1.0"
+  }
+ };
+
+service $NAME$Service {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_tag) = {name: "$NAME$"};
+}

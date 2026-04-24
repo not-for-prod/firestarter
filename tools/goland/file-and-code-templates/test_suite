@@ -1,0 +1,19 @@
+package ${GO_PACKAGE_NAME}
+
+import (
+	"testing"
+
+	"github.com/stretchr/testify/suite"
+)
+
+type TestSuite struct {
+	suite.Suite
+}
+
+func (suite *TestSuite) SetupSuite() {}
+
+func (suite *TestSuite) TearDownSuite() {}
+
+func TestTestSuite(t *testing.T) {
+	suite.Run(t, new(TestSuite))
+}

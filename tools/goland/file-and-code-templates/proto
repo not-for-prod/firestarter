@@ -1,0 +1,3 @@
+syntax = "proto3";
+
+package ${DIR_PATH.replace("/", ".").replaceFirst("api.", "")};

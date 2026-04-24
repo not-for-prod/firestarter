@@ -1,0 +1,14 @@
+version: v2
+modules:
+  - path: api
+deps:
+  - buf.build/googleapis/googleapis
+  - buf.build/grpc-ecosystem/grpc-gateway
+  - buf.build/bufbuild/protovalidate
+  - buf.build/nfp341/proterror
+lint:
+  use:
+    - STANDARD
+breaking:
+  use:
+    - FILE

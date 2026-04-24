@@ -1,0 +1,6 @@
+rpc $NAME$($NAME$Request) returns ($NAME$Response) {
+    option (google.api.http) = {
+      $METHOD$: "/v1/$URL$"
+      body: "*"
+    };
+};

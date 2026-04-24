@@ -1,0 +1,13 @@
+type $NAME$Options struct {}
+
+type $NAME$Option func(*$NAME$Options)
+
+func New$NAME$Options(opts ...$NAME$Option) *$NAME$Options {
+	o := &$NAME$Options{}
+
+	for _, opt := range opts {
+		opt(o)
+	}
+
+	return o
+}

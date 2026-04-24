@@ -1,0 +1,22 @@
+Namespace: nfp
+Subsystem: firestarter
+
+Tempo:
+  URL: localhost:4317
+  ServiceName: firestarter
+  ServiceVersion: v1.0.0
+
+Postgres:
+  DSN: postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable
+  MaxConnections: 10
+  MinConnections: 2
+  MinIdleConnections: 5
+  MaxConnLifetime: 10s
+
+Service:
+  GRPCPort: 5000
+  HTTPPort: 8000
+
+MonitoringService:
+  HTTPPort: 9000
+  ReadHeaderTimeout: 10s
