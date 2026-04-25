@@ -27,7 +27,6 @@ import (
 	"github.com/not-for-prod/clay/server"
 	"github.com/not-for-prod/clay/server/middlewares/mwgrpc"
 	"github.com/not-for-prod/clay/server/middlewares/mwhttp"
-	"github.com/not-for-prod/clay/transport"
 	"github.com/not-for-prod/observer/logger"
 	"github.com/not-for-prod/observer/logger/zap"
 	"github.com/not-for-prod/observer/tracer"
@@ -52,6 +51,7 @@ func main() {
 	fx.New(
 		fx.Logger(newFxLogger()),
 		fx.Provide(
+			config.Instance,
 			prometheus.NewRegistry,
 			protovalidate.New,
 			provideMetrics,
@@ -62,18 +62,19 @@ func main() {
 			// repository
 			// gateway
 			// ===== application =====
+			// commands
+			// queries
 			// ===== delivery =====
 			// workers
 			provideWorkers,
-			// servers
-			provideServices,
+			// services
 		),
 		fx.Invoke(
 			config.Instance,
 			invokeLogger,
 			invokeTraces,
 			invokeWorkers,
-			invokeServices,
+			invokeService,
 			invokeMonitoringService,
 		),
 	).Run()
@@ -105,10 +106,6 @@ func provideMetrics(registry *prometheus.Registry) (*mwhttp.ServerMetrics, *grpc
 
 func provideWorkers() []worker.Worker {
 	return []worker.Worker{} // TODO: add your workers
-}
-
-func provideServices() []transport.ServiceDesc {
-	return []transport.ServiceDesc{} // TODO: add your services
 }
 
 func provideHealthcheck() healthcheck.Handler {
@@ -185,13 +182,13 @@ func invokeWorkers(
 	return nil
 }
 
-func invokeServices(
+func invokeService(
 	lc fx.Lifecycle,
 	shutdowner fx.Shutdowner,
 	validator protovalidate.Validator,
 	grpcMetrics *grpcprom.ServerMetrics,
 	httpMetrics *mwhttp.ServerMetrics,
-	descs ...transport.ServiceDesc,
+	// TODO: << delivery services >>
 ) {
 	corsCfg := config.Instance().Service.CORS
 	corsHandler := cors.Handler(
@@ -227,7 +224,9 @@ func invokeServices(
 		fx.Hook{
 			OnStart: func(_ context.Context) error {
 				go func() {
-					err := serviceServer.Run(descs...)
+					// TODO: fill this with << delivery services >>
+					// ex. examplev1.NewExampleServiceServiceDesc(<< delivery service >>),
+					err := serviceServer.Run()
 					if err != nil && !errors.Is(err, http.ErrServerClosed) {
 						logger.Instance().Error(err.Error())
 						_ = shutdowner.Shutdown(fx.ExitCode(1))
