@@ -1,0 +1,7 @@
+type $Name$Request struct {
+
+}
+
+type $Name$Response struct {
+
+}

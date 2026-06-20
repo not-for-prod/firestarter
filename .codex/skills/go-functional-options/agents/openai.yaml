@@ -1,0 +1,4 @@
+interface:
+  display_name: "Go Functional Options"
+  short_description: "Apply functional options in Go APIs"
+  default_prompt: "Use $go-functional-options to refactor a Go constructor or public API so optional arguments are expressed as functional options."

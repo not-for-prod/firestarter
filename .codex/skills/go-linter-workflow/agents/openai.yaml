@@ -1,0 +1,4 @@
+interface:
+  display_name: "Go Linter Workflow"
+  short_description: "Run Go lint verification steps"
+  default_prompt: "Use $go-linter-workflow to verify Go changes with formatting, tests, and golangci-lint."

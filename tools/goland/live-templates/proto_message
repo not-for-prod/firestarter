@@ -1,0 +1,7 @@
+message $NAME$Request {
+
+}
+
+message $NAME$Response {
+
+}

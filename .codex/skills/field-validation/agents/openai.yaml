@@ -1,0 +1,4 @@
+interface:
+  display_name: "Field Validation"
+  short_description: "Validate fields at first occurrence"
+  default_prompt: "Use $field-validation to validate request, response, and DTO fields at their first occurrence, preferring buf.validate rules in proto contracts when possible."

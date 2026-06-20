@@ -1,0 +1,4 @@
+interface:
+  display_name: "Function Decomposition"
+  short_description: "Decide when to split or inline functions"
+  default_prompt: "Use $function-decomposition to decide whether this function should stay inline or be split into helpers."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Error Handling"
+  short_description: "Classify and propagate Go errors consistently."
+  default_prompt: "Use $error-handling to classify Go error returns with proterror and preserve lowest-level ownership without double-wrapping."

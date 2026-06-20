@@ -1,0 +1,4 @@
+interface:
+  display_name: "Method Per File"
+  short_description: "Structure adapter methods"
+  default_prompt: "Use $method-per-file to organize a Go repository or gateway method file with local DTOs and conversions."

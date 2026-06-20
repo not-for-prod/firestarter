@@ -1,0 +1,4 @@
+interface:
+  display_name: "Naming"
+  short_description: "Choose clear names for code concepts"
+  default_prompt: "Use $naming to choose clearer names for variables, functions, types, and packages."

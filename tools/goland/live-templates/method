@@ -1,0 +1,1 @@
+$Name$(ctx context.Context, req $Name$Request) (*$Name$Response, error)

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Go Tracing Instrumentation"
+  short_description: "Add prospan tracing to Go methods consistently."
+  default_prompt: "Use $tracing to add prospan tracing to the relevant Go methods with correct span.Err ownership."

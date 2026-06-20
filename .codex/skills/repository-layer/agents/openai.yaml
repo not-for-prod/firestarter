@@ -1,0 +1,4 @@
+interface:
+  display_name: "Repository Layer"
+  short_description: "Build Go repository adapters"
+  default_prompt: "Use $repository-layer to implement or review a Go repository contract and PostgreSQL adapter."

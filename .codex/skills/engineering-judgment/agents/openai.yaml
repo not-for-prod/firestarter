@@ -1,0 +1,4 @@
+interface:
+  display_name: "Engineering Judgment"
+  short_description: "Choose code ownership clearly"
+  default_prompt: "Use $engineering-judgment to decide where code belongs and keep the implementation scope disciplined."

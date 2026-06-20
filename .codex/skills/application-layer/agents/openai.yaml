@@ -1,0 +1,4 @@
+interface:
+  display_name: "Application Layer"
+  short_description: "Design Go application services"
+  default_prompt: "Use $application-layer to design or update a Go application service without leaking delivery or infrastructure details."

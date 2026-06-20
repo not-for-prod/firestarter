@@ -1,0 +1,4 @@
+interface:
+  display_name: "Go Code Style"
+  short_description: "Apply local Go style rules"
+  default_prompt: "Use $go-code-style to keep this Go change aligned with the repository's style expectations."

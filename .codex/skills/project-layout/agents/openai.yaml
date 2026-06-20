@@ -1,0 +1,4 @@
+interface:
+  display_name: "Project Layout"
+  short_description: "Explain and enforce this repo's layout"
+  default_prompt: "Use $project-layout to explain where code belongs in this repository and keep changes aligned with the existing Go service layers."

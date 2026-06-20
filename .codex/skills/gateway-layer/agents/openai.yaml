@@ -1,0 +1,4 @@
+interface:
+  display_name: "Gateway Layer"
+  short_description: "Build Go gateway adapters"
+  default_prompt: "Use $gateway-layer to implement or review a Go gateway behind a domain-facing interface."
