@@ -1,0 +1,4 @@
+interface:
+  display_name: "Domain Modeling"
+  short_description: "Model Go aggregates and value objects"
+  default_prompt: "Use $domain-entity to design or refactor a Go domain aggregate with guarded transitions and domain events."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Delivery Layer"
+  short_description: "Build Go API handlers and workers"
+  default_prompt: "Use $delivery-layer to implement a thin Firestarter API handler or worker around an application service."

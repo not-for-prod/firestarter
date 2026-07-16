@@ -1,0 +1,4 @@
+interface:
+  display_name: "Firestarter Tracing"
+  short_description: "Instrument Firestarter Go traces safely"
+  default_prompt: "Use $tracing to add prospan tracing to the relevant Go methods with correct span.Err ownership."

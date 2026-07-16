@@ -1,0 +1,4 @@
+interface:
+  display_name: "Deliver Feature"
+  short_description: "Deliver Firestarter features end to end"
+  default_prompt: "Use $deliver-feature to turn this feature request into a verified Firestarter implementation."

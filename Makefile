@@ -95,3 +95,7 @@ linter:
 
 fmt:
 	golangci-lint --config .golangci.yaml fmt
+
+.PHONY: skills-validate
+skills-validate:
+	python3 .agents/scripts/validate_skills.py

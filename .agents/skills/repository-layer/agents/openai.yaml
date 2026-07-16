@@ -1,0 +1,4 @@
+interface:
+  display_name: "Repository Layer"
+  short_description: "Design repository contracts and adapters"
+  default_prompt: "Use $repository-layer to design or implement a Firestarter repository contract, transaction-aware PostgreSQL adapter, and focused tests."
